@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script>
+    function submit() {
+        var form = new FormData();
+        const imageInput = $("#imageInput")[0];
+        if (imageInput.files.length == 0) {
+            console.log("파일을 넣어주세요")
+            return
+        }
+        form.append("file", imageInput.files[0]);
+        $.ajax({
+            url: "/request"
+            , type: "POST"
+            , processData: false
+            , contentType: false
+            , data: form
+            , success: function (response) {
+                console.log(response);
+                let p =  $("#result")[0]
+                p.style.visibility = "visible"
+                let url = "http://127.0.0.1:8080/download?data=" + response['data']
+                p.innerText = url
+                window.navigator.clipboard.writeText(url)
+                alert("복사되었습니다.")
+            }
+            , error: function (jqXHR) {
+                alert("ㅠㅠ");
+            }
+        });
+
+    }
+</script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>파일없는 파일팀</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            margin: 0;
+        }
+
+        #uploadButton {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<input type="file" id="imageInput"/>
+<button id="uploadButton" onclick="submit()">업로드</button>
+<p id="result" style="visibility: hidden"></p>
+</body>
+</html>
